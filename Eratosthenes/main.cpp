@@ -208,7 +208,7 @@ int main()
 	Eratos2(initPrime, 25, Power(2, 10), Power(2, 12),primeNum);
 
 	primeNum = 0;
-	int B = 8 * Power(2, 10);
+	int B = 4 * Power(2, 10);
 	Eratos3(initPrime, 25,B, Power(2, 10), Power(2, 12), primeNum);
 
 	end = clock();
