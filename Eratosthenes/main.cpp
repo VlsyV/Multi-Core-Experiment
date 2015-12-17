@@ -12,6 +12,7 @@ int Power(int n,int p)
 	return result;
 }
 
+//原始方法查找max以内的素数
 void Eratos(int* isPrime,int max)
 {
 	for (int i = 2; i < max; i++)
@@ -24,6 +25,7 @@ void Eratos(int* isPrime,int max)
 	}
 }
 
+//利用初始素数数组和Eratos筛法查找 min和max以内的素数，素数个数存入primeNum中
 void Eratos2(int prime[], int length, int min, int max, int &primeNum)
 {
 	int pn = prime[length - 1];
