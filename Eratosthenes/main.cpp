@@ -103,7 +103,9 @@ void Eratos2(int prime[], int length, int min, int max, int &primeNum)
 		
 }
 
-void Eratos3(int prime[], int length, int B,int min, int max, int &primeNum)
+//void Eratos3(int *prime, int length, int B, int *result, int &Num, int min, int max)
+int* Eratos3(int *prime, int length, int B,  int &Num, int min, int max)
+//void Eratos3(int prime[], int length, int B,int min, int max, int &primeNum)
 {
 	int pn = prime[length - 1];
 
@@ -129,25 +131,25 @@ void Eratos3(int prime[], int length, int B,int min, int max, int &primeNum)
 		}
 	}
 
-	int Num = 0;
+	Num = 0;
 	for (int i = 0; i < count; i++)
 	{
 		if (A[i] == '0')
 			Num++;
 	}
 
-	int* result = new int[Num + length];
-	for (int i = 0; i < length; i++)
-		result[i] = prime[i];
-	for (int i = 0, j = length; i < count; i++)
+	int*result = new int[Num];
+	//result = (int*)malloc(Num*sizeof(int*));
+	for (int i = 0, j = 0; i < count; i++)
 	{
 		if (A[i] == '0')
 			result[j++] = i + offset;
 	}
 
-	cout << "区间[" << pn + 1 << "," << right << "]" << endl;
-	cout << "素数个数:" << Num << endl;
-	cout << "素数区间:" << "[" << result[length] << "," << result[Num + length - 1] << "]" << endl;
+	return result;
+	//cout << "区间[" << pn + 1 << "," << right << "]" << endl;
+	//cout << "素数个数:" << Num << endl;
+	//cout << "素数区间:" << "[" << result[length] << "," << result[Num + length - 1] << "]" << endl;
 
 	//if (result[length]<min && result[Num + length - 1] > min)
 	//{
@@ -166,36 +168,42 @@ void Eratos3(int prime[], int length, int B,int min, int max, int &primeNum)
 	//			primeNum++;
 	//}
 
-	for (int i = 0; i < Num+length; i++)
-	{
-		if (result[i] >= min&&result[i] <= max)
-			primeNum++;
-	}
+	//for (int i = 0; i < Num+length; i++)
+	//{
+	//	if (result[i] >= min&&result[i] <= max)
+	//		primeNum++;
+	//}
 
-	if (right < max)
-	{
-		Eratos3(result, Num + length, B, min, max, primeNum);
+	//if (right < max)
+	//{
+	//	Eratos3(result, Num + length, B, min, max, primeNum);
 
-	}
-	else
-	{
-		cout << "区间[" << min << "," << max << "]" << "共有" << primeNum << "个素数" << endl;
-	}
+	//}
+	//else
+	//{
+	//	cout << "区间[" << min << "," << max << "]" << "共有" << primeNum << "个素数" << endl;
+	//}
 
 }
 
 
 int main()
 {
-	int  initPrime[25] = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97 };
-	clock_t start, end;
+	int  initPrime[] = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97 };
+	int initLength = 25;
 
-	int max = Power(2, 26);
+	int * initPrimeArr = new int[initLength];
+	for (int i = 0; i < initLength; i++)
+		initPrimeArr[i] = initPrime[i];
+	
+	clock_t start, end;
 
 	start = clock();
 	
 	int primeNum = 0;
 
+	//产生标准
+	//int max = Power(2, 26);
 	//int * isPrime = new int[max];
 	//Eratos(isPrime, max);
 
@@ -206,12 +214,86 @@ int main()
 	//}
 	//cout << "区间[" << 9409 << "," << max << "]" << "素数个数：" << primeNum << endl;
 
-	
-	Eratos2(initPrime, 25, Power(2, 10), Power(2, 12),primeNum);
+	//1.1
+	//Eratos2(initPrimeArr, 25, Power(2, 25), Power(2, 26),primeNum);
 
-	primeNum = 0;
-	int B = 8 * Power(2, 10);
-	Eratos3(initPrime, 25,B, Power(2, 10), Power(2, 12), primeNum);
+	//1.2
+	//primeNum = 0;
+	int B = 4* Power(2, 10);
+	//Eratos3(initPrimeArr, 25, B, Power(2, 25), Power(2, 26), primeNum);
+	int min = Power(2, 25);
+	int max = Power(2, 26);
+	
+	while (1)
+	{
+		int Num = 0;
+		int *result = NULL;
+		result = Eratos3(initPrimeArr, initLength, B, Num, min, max);
+
+		cout << "初始区间[" << initPrimeArr[0] << "," << initPrimeArr[initLength - 1] << "]" << endl;
+		cout << "素数个数:" << Num << endl;
+		cout << "素数区间:" << "[" << result[0] << "," << result[Num - 1] << "]" << endl;
+		cout << "总素数个数:" << primeNum << endl;
+
+		//计算区间素数个数primeNum
+		if (result[Num - 1 ]< min)
+		{
+			//继续筛选
+			//合并初始数组
+			int *nextPrimeArr = new int[initLength + Num];
+
+			for (int i = 0; i < initLength; i++)
+			{
+				nextPrimeArr[i] = initPrimeArr[i];
+			}
+			for (int i = 0; i < Num; i++)
+			{
+				nextPrimeArr[i + initLength] = result[i];
+			}
+
+			delete[] initPrimeArr;
+			initPrimeArr = nextPrimeArr;
+			nextPrimeArr = NULL;
+		}
+		else if (result[0] >= min&&result[Num - 1] <= max)
+		{
+			//计算primeNum
+			primeNum += Num;
+			//继续筛选
+			//合并初始数组
+			int *nextPrimeArr = new int[initLength + Num];
+
+			for (int i = 0; i < initLength; i++)
+			{
+				nextPrimeArr[i] = initPrimeArr[i];
+			}
+			for (int i = 0; i < Num; i++)
+			{
+				nextPrimeArr[i + initLength] = result[i];
+			}
+
+			delete[] initPrimeArr;
+			initPrimeArr = nextPrimeArr;
+			nextPrimeArr = NULL;
+		}
+		else if (result[0] >= min && result[Num - 1] > max)
+		{
+			//计算primeNum
+			for (int i = 0; i < Num; i++)
+			{
+				if (result[i] <= max)
+					primeNum++;
+			}
+			break;
+		}
+		else if (result[0] > max)
+		{
+			break;
+		}
+
+	}
+
+
 
 	end = clock();
 	cout << "共花费" << (end - start)  << "（us）" << endl;
